@@ -6,21 +6,18 @@ import serial
 import time
 
 # ESP32-CAM의 스트리밍 주소
-stream_url = "http://192.168.0.101:81/stream"
+capture_url = "http://192.168.219.186/capture"
 
 # GPT Vision API 요청
 openai.api_key = ""
 
-def set_image():
-  # 프레임 캡처 (1장만)
-  cap = cv2.VideoCapture(stream_url)
-  ret, frame = cap.read()
-  cap.release()
 
-  # 이미지 인코딩 → base64 변환
-  _, buffer = cv2.imencode('.jpg', frame)
-  b64_image = base64.b64encode(buffer).decode('utf-8')
-  return b64_image
+def set_image():
+    response = requests.get(capture_url)
+    image_data = response.content
+    b64_image = base64.b64encode(image_data).decode('utf-8')
+    return b64_image
+
 
 def classify_trash(image):
   response = openai.chat.completions.create(
@@ -54,14 +51,9 @@ def classify_trash(image):
   return response.choices[0].message.content.strip()
 
 
-# 아두이노 연결
-arduino = serial.Serial('COM3', 9600)
-time.sleep(2)
-
 while(True):
-  # 아두이노에서 쓰레기 투입 신호 받음
-   arduino.read()
-
-   if():
-      
-      arduino.write(classify_trash(set_image()).encode())
+  command=input("시작하려면 1")
+  if(command=='1'):
+    image=set_image()
+    output=classify_trash(image)
+    print(output)
