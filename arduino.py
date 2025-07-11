@@ -1,6 +1,16 @@
 import serial
 import time
 import sys
+import requests
+import openai
+import base64
+
+# ESP32-CAM의 스트리밍 주소
+capture_url = "http://192.168.219.186/capture"
+
+# GPT Vision API 요청
+openai.api_key = ""
+
 
 # 아두이노 블루투스 모듈의 시리얼 포트 이름 (실제 환경에 맞게 변경)
 bluetooth_port = 'COM7' # 예시: 'COM3' 또는 '/dev/rfcomm0' 또는 '/dev/tty.Bluetooth-Incoming-Port'
@@ -8,6 +18,46 @@ baud_rate = 9600
 reconnect_interval = 5 # 재연결 시도 간격 (초)
 
 ser = None # 시리얼 객체를 전역으로 선언
+
+def set_image():
+    response = requests.get(capture_url)
+    image_data = response.content
+    b64_image = base64.b64encode(image_data).decode('utf-8')
+    return b64_image
+
+
+def classify_trash(image):
+  response = openai.chat.completions.create(
+      model="gpt-4o",
+      messages=[
+          {
+              "role": "system",
+              "content": "You are a trash classification system. "
+                "Only respond with one of the following: plastic, can, glass, other. "
+                "Plastic includes PET bottles and hard plastic items. "
+                "Vinyl, plastic bags, or film should be classified as 'other'. "
+                "Straws should be classified as 'other'. "
+                "respond only in lowercase. "
+          },
+          {
+              "role": "user",
+              "content": [
+                  {"type": "text", "text": "Classify the trash in this image"},
+                  {
+                      "type": "image_url",
+                      "image_url": {
+                          "url": f"data:image/jpeg;base64,{image}",
+                          "detail": "low"
+                      }
+                  }
+              ]
+          }
+      ],
+      max_tokens=5
+  )
+
+  return response.choices[0].message.content.strip()
+
 
 try:
     while True:
@@ -40,8 +90,21 @@ try:
                             if received_data == "TRIGGER":
                                 print("아두이노로부터 'TRIGGER' 신호를 받았습니다!")
 
-                                # 아두이노에게 보낼 문자열 정의
-                                response_message = "1"
+                                image=set_image()
+                                trash=classify_trash(image)
+
+                                if(trash=="plastic"):
+                                    response_message="1"
+                                elif(trash=="glass"):
+                                    response_message="2"
+                                elif(trash=="can"):
+                                    response_message="3"
+                                elif(trash=="other"):
+                                    response_message="4"
+                                else:
+                                    response_message="0"
+                                print(trash)
+                                print(response_message)
 
                                 # 데이터를 보내기 전에 혹시 남아있을 수 있는 수신 버퍼를 비웁니다.
                                 if ser.in_waiting > 0:
