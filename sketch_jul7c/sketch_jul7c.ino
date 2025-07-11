@@ -50,6 +50,7 @@ float measureDistance()
 
 
 // 모터 구동 함수
+int pos;
 void activate(char command) 
 {
 
@@ -62,26 +63,24 @@ void activate(char command)
       //lcd 표시
       lcd.clear();
       lcd.setCursor(2, 0);
-      lcd.print("Processing 1");
+      lcd.print("Plastic");
 
-     // ✅ 스피커 출력: 1번 트랙 재생 (스피커 확인 필요)
-      //myDFPlayer.play(1);
+    
 
-      //모터 구동
-      servo1.write(100);//반시계 속도
-      delay(2000);//돌아가는 시간
-      servo1.write(90);//멈춤
-      delay(2000);//멈춤시간
+      // servo2.write(60); 
+      // delay(2000);
+      // servo2.write(0);
+      // delay(2000);
+      for (pos = 0; pos <= 40; pos += 10) { // 10도씩 증가
+        servo2.write(pos);
+        delay(300); // 속도 조절: delay를 늘리면 더 느려짐
+      }
+      delay(1000);
+      for (pos = 40; pos >= 0; pos -= 10) { // 10도씩 증가
+        servo2.write(pos);
+        delay(300); // 속도 조절: delay를 늘리면 더 느려짐
+      }
 
-      servo2.write(70); 
-      delay(2000);
-      servo2.write(0);
-      delay(2000);
-
-      servo1.write(80);//시계방향
-      delay(2000);//돌아가는 시간
-      servo1.write(90);//멈춤
-      delay(2000);//멈춤시
 
       break;
 
@@ -90,23 +89,32 @@ void activate(char command)
      //lcd 표시
       lcd.clear();
       lcd.setCursor(2, 0);
-      lcd.print("Processing 2");
+      lcd.print("Glass");
 
       // ✅ 스피커 출력: 2번 트랙 재생 (스피커 확인 필요)
       //myDFPlayer.play(2);
 
       servo1.write(100);
-      delay(2000);
+      delay(1000);
       servo1.write(90);
       delay(2000);
 
-      servo2.write(60);
-      delay(2000);
-      servo2.write(0);
-      delay(2000);
+      // servo2.write(60);
+      // delay(2000);
+      // servo2.write(0);
+      // delay(2000);
+      for (pos = 0; pos <= 40; pos += 10) { // 10도씩 증가
+        servo2.write(pos);
+        delay(300); // 속도 조절: delay를 늘리면 더 느려짐
+      }
+      delay(1000);
+      for (pos = 40; pos >= 0; pos -= 10) { // 10도씩 증가
+        servo2.write(pos);
+        delay(300); // 속도 조절: delay를 늘리면 더 느려짐
+      }
 
       servo1.write(80);
-      delay(2000);
+      delay(850);
       servo1.write(90);
       delay(2000);
 
@@ -118,23 +126,32 @@ void activate(char command)
       //lcd 표시
       lcd.clear();
       lcd.setCursor(2, 0);
-      lcd.print("Processing 3");
+      lcd.print("Can");
 
       // ✅ 스피커 출력: 3번 트랙 재생 (스피커 확인 필요)
       //myDFPlayer.play(3);
 
       servo1.write(100);
-      delay(2000);
+      delay(1870);
       servo1.write(90);
       delay(2000);
 
-      servo2.write(60);
-      delay(2000);
-      servo2.write(0);
-      delay(2000);
+      // servo2.write(60);
+      // delay(2000);
+      // servo2.write(0);
+      // delay(2000);
+      for (pos = 0; pos <= 40; pos += 10) { // 10도씩 증가
+        servo2.write(pos);
+        delay(300); // 속도 조절: delay를 늘리면 더 느려짐
+      }
+      delay(1000);
+      for (pos = 40; pos >= 0; pos -= 10) { // 10도씩 증가
+        servo2.write(pos);
+        delay(300); // 속도 조절: delay를 늘리면 더 느려짐
+      }
 
       servo1.write(80);
-      delay(2000);
+      delay(1620);
       servo1.write(90);
       delay(2000);
 
@@ -145,23 +162,32 @@ void activate(char command)
       //lcd 표시
       lcd.clear();
       lcd.setCursor(2, 0);
-      lcd.print("Processing 4");
+      lcd.print("General");
 
        // ✅ 스피커 출력: 4번 트랙 재생 (스피커 확인 필요)
       //myDFPlayer.play(4);
 
       servo1.write(100);
-      delay(2000);
+      delay(2700);
       servo1.write(90);
       delay(2000);
 
-      servo2.write(60);
-      delay(2000);
-      servo2.write(0);
-      delay(2000);
+      // servo2.write(60);
+      // delay(2000);
+      // servo2.write(0);
+      // delay(2000);
+      for (pos = 0; pos <= 40; pos += 10) { // 10도씩 증가
+        servo2.write(pos);
+        delay(300); // 속도 조절: delay를 늘리면 더 느려짐
+      }
+      delay(1000);
+      for (pos = 40; pos >= 0; pos -= 10) { // 10도씩 증가
+        servo2.write(pos);
+        delay(300); // 속도 조절: delay를 늘리면 더 느려짐
+      }
 
       servo1.write(80);
-      delay(2000);
+      delay(2350);
       servo1.write(90);
       delay(2000);
 
@@ -233,7 +259,7 @@ void loop()
   {
     float distance = measureDistance();
 
-    if (distance > 0 && distance <= 15) 
+    if (distance > 0 && distance <= 20) 
     {
       inRangeCount++;
     }
